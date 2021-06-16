@@ -29,7 +29,14 @@ public class app {
 		for (Seller list : listSeller) {
 			System.out.println(list);
 		}
+		
+		System.out.println("\n*** TEST 03 | Seller FindAll ***");
 
+		List<Seller> sellerFindAll = sellerDao.findAll();
+		
+		for (Seller seller2 : sellerFindAll) {
+			System.out.println(seller2 + "\n");
+		}
 	}
 
 }

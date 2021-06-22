@@ -59,5 +59,16 @@ public class app {
 		
 		System.out.println("Updated success!!");
 
+		System.out.println("\n*** TEST 06 | Seller delete ***");
+		
+		seller = sellerDao.findById(14);
+		
+		System.out.println(seller);
+		
+		sellerDao.deleteById(14);
+		
+		System.out.println("User deleted");
+				
+				
 	}
 }

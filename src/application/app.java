@@ -13,7 +13,7 @@ public class app {
 	public static void main(String[] args) throws ParseException {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-		
+
 		SellerDao sellerDao = DaoFactory.createSellerDao();
 		/*
 		 * System.out.println("*** TEST 01 | FindById ***");
@@ -35,16 +35,29 @@ public class app {
 		 * List<Seller> sellerFindAll = sellerDao.findAll();
 		 * 
 		 * for (Seller seller2 : sellerFindAll) { System.out.println(seller2 + "\n"); }
+		 * 
+		 * System.out.println("\n*** TEST 04 | Seller inserted ***");
+		 * 
+		 * Department dep = new Department(3, null);
+		 * 
+		 * Seller seller = new Seller(null, "Arthur Santos", "arthur.ead@gmail.com",
+		 * sdf.parse("12/12/2014"), 1000.60, dep);
+		 * 
+		 * sellerDao.insert(seller);
+		 * 
+		 * System.out.println("Inserted!!, ID: " + seller.getId());
 		 */
+		
+		System.out.println("\n*** TEST 05 | Seller updated ***");
+		
+		Department dep = new Department(1, null);
 
-		System.out.println("\n*** TEST 04 | Seller inserted ***");
+		Seller seller = new Seller(13, "Isaias S Miranda", "isaiasmiranda@hotmail.com", sdf.parse("20/07/1980"), 3000.00,
+				dep);
 
-		Department dep = new Department(2, null);
+		sellerDao.update(seller);
+		
+		System.out.println("Updated success!!");
 
-		Seller seller = new Seller(null, "Isaias Santos de Miranda", "isaias.ead@gmail.com", sdf.parse("12/12/1973"), 3600.60, dep);
-
-		sellerDao.insert(seller);
-
-		System.out.println("Inserted!!, ID: " + seller.getId());
 	}
 }

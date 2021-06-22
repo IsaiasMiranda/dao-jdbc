@@ -1,9 +1,13 @@
 package model.dao.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +29,39 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void insert(Seller seller) {
-		// TODO Auto-generated method stub
+		PreparedStatement pst = null;
+		
+		String sql = "INSERT INTO ismtech.seller (Name, Email, BirthDate, BaseSalary, DepartmentId)\n"
+				+ "	VALUES (?, ?, ?, ?, ?)";	
 
+		try {
+
+			pst = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+			pst.setString(1, seller.getName());
+			pst.setString(2, seller.getEmail());
+			pst.setDate(3, new java.sql.Date(seller.getBirthDate().getTime()));
+			pst.setDouble(4, seller.getBaseSalary());
+			pst.setInt(5, seller.getDepartment().getId());
+
+			int linesAffected = pst.executeUpdate();
+
+			if (linesAffected > 0) {
+				ResultSet rs = pst.getGeneratedKeys();
+				if (rs.next()) {
+					int id = rs.getInt(1);
+					seller.setId(id);
+				}
+				DB.closeResultSet(rs);
+			} else {
+				throw new DbException("Unexpected error, no lines affected!!");
+			}
+
+		} catch (SQLException e) {
+			throw new DbException("Error: " + e.getMessage());
+		} finally {
+			DB.closeStatement(pst);
+		}
 	}
 
 	@Override
@@ -109,10 +144,17 @@ public class SellerDaoJDBC implements SellerDao {
 			rs = pst.executeQuery();
 			
 			List<Seller> listSeller = new ArrayList<>();
+			Map<Integer, Department> map = new HashMap<>();
 			
 			while (rs.next()) {
 
-				Department dep = instantiateDepartment(rs);
+				Department dep = map.get(rs.getInt("DepartmentId"));
+
+				if (dep == null) {
+
+					dep = instantiateDepartment(rs);
+					map.put(rs.getInt("DepartmentId"), dep);
+				}
 
 				Seller seller = instantiateSeller(rs, dep);
 
